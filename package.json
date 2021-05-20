@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.ts",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "start": "npx knex migrate:latest && npm test && nodemon src/index.ts",
+    "test": "mocha -r ts-node/register src/**/*.spec.ts --exit"
   },
   "repository": {
     "type": "git",
