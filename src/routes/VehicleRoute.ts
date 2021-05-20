@@ -20,10 +20,9 @@ class VehicleRoute{
 
     public prepare(router:Router):Router{
         router.get('/vehicle/all', this.urlencodedParser, this.get_all.bind(this));
-        router.post('/vehicle/', this.urlencodedParser, (req:Request, res:Response, next) => {
-            return this.create(req, res);
-            next();
-        });
+        router.post('/vehicle/', this.urlencodedParser, this.create.bind(this));
+        router.patch('/vehicle/:id', this.urlencodedParser, this.edit.bind(this));
+        router.delete('/vehicle/:id', this.urlencodedParser, this.remove.bind(this));
         //router.patch('/vehicle/:id', this.get_all.bind(this));
         return router;
     }
@@ -70,18 +69,43 @@ class VehicleRoute{
 
     private async edit(req:Request, res:Response):Promise<Response> {
         try{
-            const response = await this.controller.edit(req.body.params)
-            return res.status(200).json(response);
+            let rules = Joi.object(
+                {
+                    ano : Joi.number().required().min(1500).max(2021),
+                    chassi: Joi.string().required().min(5).max(17),
+                    renavam: Joi.string().required().min(9).max(11),
+                    marca: Joi.string().required().min(2),
+                    modelo: Joi.string().required().min(2),
+                    placa: Joi.string().required().min(7).max(7),
+                }
+            );
+
+            const { id } = req.params;
+    
+            const { error, value } = rules.validate(req.body);
+
+            if(error){
+                return res.status(401).json(error);   
+            } else {
+                value.id = id;
+                const response = await this.controller.edit(value);
+                if(response != true){
+                    return res.status(205).json(response);
+                } else {
+                    return res.status(201).json(response);
+                }
+                
+            }
         } catch (error) {
             console.log(error);
-            return res.status(403);
+            return res.status(404);
         }
     }
 
     private async remove(req:Request, res:Response):Promise<Response> {
         try{
             const {id} = req.params;
-            const response = await {}//this.controller.get(id);
+            const response = await this.controller.remove(id);
             return res.status(200).json(response);
         } catch (error) {
             console.log(error);
@@ -92,7 +116,7 @@ class VehicleRoute{
     private async suggestions(req:Request, res:Response):Promise<Response> {
         try{
             const {id} = req.params;
-            const response = await {}//this.controller.get(id);
+            const response = await {}
             return res.status(200).json(response);
         } catch (error) {
             console.log(error);

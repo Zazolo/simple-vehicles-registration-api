@@ -16,15 +16,18 @@ class VehicleController implements IVehicleController{
         return await this.database.get_all();
     }
 
-    public async edit(params:{}):Promise<boolean|string>{
-        console.log(params);
-        return await true;//this.database.edit(vehicle);
+    public async edit(params:IVehicle):Promise<boolean|string>{
+        try {
+            let newVehicle = new VehicleEntity(params);
+            return await this.database.edit(newVehicle);
+        } catch (error) {
+            return error;
+        }   
     }
 
     public async create(params:IVehicle):Promise<boolean|string>{
         try {
             let newVehicle = new VehicleEntity(params);
-            console.log(newVehicle);
             return await this.database.create(newVehicle);
         } catch (error) {
             return error;

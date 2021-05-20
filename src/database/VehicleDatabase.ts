@@ -9,11 +9,15 @@ class VehicleDatabase implements IVehicleDatabase{
                 if(!result){
                     resolve('ok');
                 } else {
-                    if(ignore_id){
+                    if(ignore_id != undefined){
                         if(result.id == ignore_id){
+                            console.log('IGNOROU O ID: ', ignore_id);
                             resolve('ok')
+                        } else {
+                            resolve(key);
                         }
                     } else {
+                        console.log('coloquei a chave: ', key)
                         resolve(key);
                     }
                     
@@ -36,6 +40,7 @@ class VehicleDatabase implements IVehicleDatabase{
                 oks.forEach((ok) => {
                     if(ok != 'ok'){
                         reject(`${ok.toUpperCase()} já existe no banco de dados!`)
+                        return;
                     }
                 })
             })
@@ -80,14 +85,18 @@ class VehicleDatabase implements IVehicleDatabase{
                 this.checkIfExists('chassi', element.chassi, element.id),
                 this.checkIfExists('placa', element.placa, element.id)
             ]).then((oks)=>{
-                console.log(oks)
+                console.log(oks);
                 oks.forEach((ok) => {
                     if(ok != 'ok'){
                         reject(`${ok.toUpperCase()} já existe no banco de dados!`)
+                        return;
                     }
                 })
-            })
 
+               
+            });
+
+            
             knex('vehicle').update(
                 {
                     ano:element.ano,
@@ -104,8 +113,11 @@ class VehicleDatabase implements IVehicleDatabase{
             ).then((r) => {
                 resolve(true);
             }).catch((err)=>{
+                console.log('Erro aqui!');
                 reject(err);
             })
+
+            
         })
         
     
