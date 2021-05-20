@@ -27,28 +27,27 @@ class VehicleRoute{
     }
 
     private async create(req:Request, res:Response):Promise<Response> {
-        try{
-            const rules = Joi.object(
-                {
-                    ano : Joi.number().required().min(1500).max(2021),
-                    chassi: Joi.string().required().min(5).max(17),
-                    renavam: Joi.string().required().min(9).max(11),
-                    marca: Joi.string().required().min(2),
-                    modelo: Joi.string().required().min(2),
-                    placa: Joi.string().required().min(7).max(7),
-                }
-            );
-
-            const { error, value } = rules.validate(req.body);
-
-            if(error){
-                return res.status(401).json(error);
-            } else {
-                const response = await this.controller.create(value);
-                return res.status(201).json(response);
+        const rules = Joi.object(
+            {
+                ano : Joi.number().required().min(1500).max(2021),
+                chassi: Joi.string().required().min(5).max(17),
+                renavam: Joi.string().required().min(9).max(11),
+                marca: Joi.string().required().min(2),
+                modelo: Joi.string().required().min(2),
+                placa: Joi.string().required().min(7).max(7),
             }
-        } catch (error) {
-            return res.status(404); // se existir tem que retornar 409
+        );
+
+        const { error, value } = rules.validate(req.body);
+
+        if(error){
+            return res.status(401).json(error);
+        } else {
+            this.controller.create(value).then((ok) => {
+                res.status(201).json(ok);
+            }).catch((err) => {
+                return res.status(405).json(err);
+            })
         }
     }
 
@@ -65,7 +64,6 @@ class VehicleRoute{
     }
 
     private async edit(req:Request, res:Response):Promise<Response> {
-        try{
             const rules = Joi.object(
                 {
                     ano : Joi.number().required().min(1500).max(2021),
@@ -85,17 +83,13 @@ class VehicleRoute{
                 return res.status(401).json(error);
             } else {
                 value.id = id;
-                const response = await this.controller.edit(value);
-                if(response !== true){
-                    return res.status(205).json(response);
-                } else {
-                    return res.status(201).json(response);
-                }
-
+                this.controller.edit(value).then((ok) => {
+                    res.status(201).json(ok);
+                }).catch((err) => {
+                    return res.status(405).json(err);
+                })
             }
-        } catch (error) {
-            return res.status(404);
-        }
+       
     }
 
     private async remove(req:Request, res:Response):Promise<Response> {
@@ -104,7 +98,7 @@ class VehicleRoute{
             const response = await this.controller.remove(id);
             return res.status(200).json(response);
         } catch (error) {
-            return res.status(403);
+            return res.status(500);
         }
     }
 

@@ -26,12 +26,14 @@ class VehicleController implements IVehicleController{
     }
 
     public async create(params:IVehicle):Promise<boolean|VehicleEntity>{
-        try {
+        return new Promise((resolve, reject) => {
             const newVehicle = new VehicleEntity(params);
-            return await this.database.create(newVehicle);
-        } catch (error) {
-            return error;
-        }
+            this.database.create(newVehicle).then((ok) => {
+                resolve(ok);
+            }).catch((err) => {
+                reject(err);
+            })
+        })
     }
 
     public async remove(id:string):Promise<boolean>{

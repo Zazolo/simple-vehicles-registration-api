@@ -9,7 +9,7 @@ class App {
         this.express = express();
         this.middlewares();
         this.routes();
-        console.log('Serviço iniciado.');
+        console.log('Serviço iniciado.')
     }
 
     private middlewares():void{
