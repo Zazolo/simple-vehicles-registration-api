@@ -11,27 +11,27 @@ class VehicleController implements IVehicleController{
     constructor(database:IVehicleDatabase){
         this.database = database;
     }
-    
+
     public async get_list():Promise<VehicleEntity[]>{
         return await this.database.get_all();
     }
 
     public async edit(params:IVehicle):Promise<boolean|string>{
         try {
-            let newVehicle = new VehicleEntity(params);
+            const newVehicle = new VehicleEntity(params);
             return await this.database.edit(newVehicle);
         } catch (error) {
             return error;
-        }   
+        }
     }
 
     public async create(params:IVehicle):Promise<boolean|string>{
         try {
-            let newVehicle = new VehicleEntity(params);
+            const newVehicle = new VehicleEntity(params);
             return await this.database.create(newVehicle);
         } catch (error) {
             return error;
-        }        
+        }
     }
 
     public async remove(id:string):Promise<boolean>{

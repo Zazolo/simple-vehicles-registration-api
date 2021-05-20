@@ -3,24 +3,22 @@ import IVehicleDatabase from "../interface/database/IVehicleDatabase";
 import knex from "./lib/knex/KNEX";
 class VehicleDatabase implements IVehicleDatabase{
 
-    private checkIfExists(key, value, ignore_id?:string):Promise<string>{
+    private checkifexists(key, value, ignoreId?:string):Promise<string>{
         return new Promise((resolve, reject) => {
             knex('vehicle').select('*').where(key, value).first().then((result) => {
                 if(!result){
                     resolve('ok');
                 } else {
-                    if(ignore_id != undefined){
-                        if(result.id == ignore_id){
-                            console.log('IGNOROU O ID: ', ignore_id);
+                    if(ignoreId !== undefined){
+                        if(result.id === ignoreId){
                             resolve('ok')
                         } else {
                             resolve(key);
                         }
                     } else {
-                        console.log('coloquei a chave: ', key)
                         resolve(key);
                     }
-                    
+
                 }
             });
 
@@ -31,14 +29,13 @@ class VehicleDatabase implements IVehicleDatabase{
         return new Promise((resolve, reject) => {
 
             Promise.all([
-                this.checkIfExists('id', element.id),
-                this.checkIfExists('renavam', element.renavam),
-                this.checkIfExists('chassi', element.chassi),
-                this.checkIfExists('placa', element.placa)
+                this.checkifexists('id', element.id),
+                this.checkifexists('renavam', element.renavam),
+                this.checkifexists('chassi', element.chassi),
+                this.checkifexists('placa', element.placa)
             ]).then((oks)=>{
-                console.log(oks)
                 oks.forEach((ok) => {
-                    if(ok != 'ok'){
+                    if(ok !== 'ok'){
                         reject(`${ok.toUpperCase()} já existe no banco de dados!`)
                         return;
                     }
@@ -61,15 +58,14 @@ class VehicleDatabase implements IVehicleDatabase{
                 reject(err);
             })
         })
-        
+
     }
     get_all(): Promise<VehicleEntity[]> {
         return new Promise((resolve, reject) => {
             knex('vehicle').select('*').then((value) => {
-                console.log(value);
-                let response = [];
+                const response = [];
                 value.forEach(element => {
-                    let nEl = new VehicleEntity(element);
+                    const nEl = new VehicleEntity(element);
                     response.push(nEl);
                 });
                 resolve(response);
@@ -81,22 +77,21 @@ class VehicleDatabase implements IVehicleDatabase{
         return new Promise((resolve, reject) => {
 
             Promise.all([
-                this.checkIfExists('renavam', element.renavam, element.id),
-                this.checkIfExists('chassi', element.chassi, element.id),
-                this.checkIfExists('placa', element.placa, element.id)
+                this.checkifexists('renavam', element.renavam, element.id),
+                this.checkifexists('chassi', element.chassi, element.id),
+                this.checkifexists('placa', element.placa, element.id)
             ]).then((oks)=>{
-                console.log(oks);
                 oks.forEach((ok) => {
-                    if(ok != 'ok'){
+                    if(ok !== 'ok'){
                         reject(`${ok.toUpperCase()} já existe no banco de dados!`)
                         return;
                     }
                 })
 
-               
+
             });
 
-            
+
             knex('vehicle').update(
                 {
                     ano:element.ano,
@@ -113,16 +108,15 @@ class VehicleDatabase implements IVehicleDatabase{
             ).then((r) => {
                 resolve(true);
             }).catch((err)=>{
-                console.log('Erro aqui!');
                 reject(err);
             })
 
-            
+
         })
-        
-    
+
+
     }
-    
+
     remove(id: string): Promise<boolean> {
         return knex('vehicle').where('id', id).del();
     }

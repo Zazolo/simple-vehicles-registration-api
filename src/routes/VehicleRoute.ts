@@ -2,18 +2,17 @@ import {Request, Response, Router} from 'express';
 import VehicleControllerInstance from '../definer';
 import IVehicleController from '../interface/controller/IVehicleController';
 import Joi = require('joi');
-var bodyParser = require('body-parser');
+import * as bodyParser from 'body-parser';
+// const bodyParser = require('body-parser');
 class VehicleRoute{
-    
+
     private controller:IVehicleController;
 
     urlencodedParser;
     constructor(){
-        console.log("Vehicle started");
-        var jsonParser = bodyParser.json();
+        const jsonParser = bodyParser.json();
         this.urlencodedParser = bodyParser.urlencoded({ extended: false })
         if(!this.controller){
-            console.log("VehicleController created in VehicleRoute");
             this.controller = VehicleControllerInstance;
         }
     }
@@ -23,13 +22,13 @@ class VehicleRoute{
         router.post('/vehicle/', this.urlencodedParser, this.create.bind(this));
         router.patch('/vehicle/:id', this.urlencodedParser, this.edit.bind(this));
         router.delete('/vehicle/:id', this.urlencodedParser, this.remove.bind(this));
-        //router.patch('/vehicle/:id', this.get_all.bind(this));
+        // router.patch('/vehicle/:id', this.get_all.bind(this));
         return router;
     }
 
     private async create(req:Request, res:Response):Promise<Response> {
         try{
-            let rules = Joi.object(
+            const rules = Joi.object(
                 {
                     ano : Joi.number().required().min(1500).max(2021),
                     chassi: Joi.string().required().min(5).max(17),
@@ -39,18 +38,17 @@ class VehicleRoute{
                     placa: Joi.string().required().min(7).max(7),
                 }
             );
-    
+
             const { error, value } = rules.validate(req.body);
 
             if(error){
-                return res.status(401).json(error);   
+                return res.status(401).json(error);
             } else {
                 const response = await this.controller.create(value);
                 return res.status(201).json(response);
             }
         } catch (error) {
-            console.log(error);
-            return res.status(404); //se existir tem que retornar 409
+            return res.status(404); // se existir tem que retornar 409
         }
     }
 
@@ -58,18 +56,17 @@ class VehicleRoute{
         try{
             const {id} = req.params;
             const response = await this.controller.get_list()
-            let code = 200;
-            response.length == 0 ? code = 404 : code;
+            let code:number;
+            response.length === 0 ? code = 404 : code = 200;
             return res.status(code).json(response);
         } catch (error) {
-            console.log(error);
             return res.status(500);
         }
     }
 
     private async edit(req:Request, res:Response):Promise<Response> {
         try{
-            let rules = Joi.object(
+            const rules = Joi.object(
                 {
                     ano : Joi.number().required().min(1500).max(2021),
                     chassi: Joi.string().required().min(5).max(17),
@@ -81,23 +78,22 @@ class VehicleRoute{
             );
 
             const { id } = req.params;
-    
+
             const { error, value } = rules.validate(req.body);
 
             if(error){
-                return res.status(401).json(error);   
+                return res.status(401).json(error);
             } else {
                 value.id = id;
                 const response = await this.controller.edit(value);
-                if(response != true){
+                if(response !== true){
                     return res.status(205).json(response);
                 } else {
                     return res.status(201).json(response);
                 }
-                
+
             }
         } catch (error) {
-            console.log(error);
             return res.status(404);
         }
     }
@@ -108,7 +104,6 @@ class VehicleRoute{
             const response = await this.controller.remove(id);
             return res.status(200).json(response);
         } catch (error) {
-            console.log(error);
             return res.status(403);
         }
     }
@@ -119,7 +114,6 @@ class VehicleRoute{
             const response = await {}
             return res.status(200).json(response);
         } catch (error) {
-            console.log(error);
             return res.status(403);
         }
     }

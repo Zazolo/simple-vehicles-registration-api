@@ -1,12 +1,9 @@
 import knex, { Knex } from "knex";
-
 class KNEXDatabase{
 
-    /**KNEX ativo */
-    public knex:Knex
+    public knex:Knex;
 
     constructor(){
-        console.log("Applying KNEX configuration");
         this.knex = knex(
             {
                 client: 'sqlite3',
