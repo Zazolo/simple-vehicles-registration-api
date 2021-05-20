@@ -25,7 +25,7 @@ class VehicleDatabase implements IVehicleDatabase{
         })
     }
 
-    create(element: VehicleEntity): Promise<string | boolean> {
+    create(element: VehicleEntity): Promise<VehicleEntity | boolean> {
         return new Promise((resolve, reject) => {
 
             Promise.all([
@@ -53,7 +53,7 @@ class VehicleDatabase implements IVehicleDatabase{
                     placa: element.placa
                 }
             ).then((r) => {
-                resolve(true);
+                resolve(element);
             }).catch((err)=>{
                 reject(err);
             })
@@ -73,7 +73,7 @@ class VehicleDatabase implements IVehicleDatabase{
         })
     }
 
-    edit(element: VehicleEntity): Promise<string | boolean> {
+    edit(element: VehicleEntity): Promise<VehicleEntity | boolean> {
         return new Promise((resolve, reject) => {
 
             Promise.all([
@@ -106,7 +106,7 @@ class VehicleDatabase implements IVehicleDatabase{
                     id: element.id
                 }
             ).then((r) => {
-                resolve(true);
+                resolve(element);
             }).catch((err)=>{
                 reject(err);
             })

@@ -1,4 +1,4 @@
-import IVehicle from 'interface/models/IVehicleEntity';
+import IVehicle from '../interface/models/IVehicleEntity';
 import VehicleEntity from '../entity/Vehicle';
 import IVehicleController from '../interface/controller/IVehicleController';
 import IVehicleDatabase from '../interface/database/IVehicleDatabase';
@@ -16,7 +16,7 @@ class VehicleController implements IVehicleController{
         return await this.database.get_all();
     }
 
-    public async edit(params:IVehicle):Promise<boolean|string>{
+    public async edit(params:IVehicle):Promise<boolean|VehicleEntity>{
         try {
             const newVehicle = new VehicleEntity(params);
             return await this.database.edit(newVehicle);
@@ -25,7 +25,7 @@ class VehicleController implements IVehicleController{
         }
     }
 
-    public async create(params:IVehicle):Promise<boolean|string>{
+    public async create(params:IVehicle):Promise<boolean|VehicleEntity>{
         try {
             const newVehicle = new VehicleEntity(params);
             return await this.database.create(newVehicle);
