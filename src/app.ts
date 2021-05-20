@@ -8,7 +8,6 @@ class App {
     public constructor(){
         this.express = express();
         this.middlewares();
-        // this.database();
         this.routes();
     }
 
@@ -16,10 +15,6 @@ class App {
         this.express.use(express.json());
         this.express.use(cors())
     }
-
-    // private database():void{
-
-    // }
 
     private routes():void{
         this.express.use(routes);
