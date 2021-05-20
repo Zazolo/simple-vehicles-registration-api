@@ -5,5 +5,4 @@ export default interface IVehicleDatabase {
     edit(element:VehicleEntity):Promise<VehicleEntity|boolean>;
     create(element:VehicleEntity):Promise<VehicleEntity|boolean>;
     remove(id:string):Promise<boolean>;
-    get_suggestion_list(brand?:string):Promise<string[]>
 }

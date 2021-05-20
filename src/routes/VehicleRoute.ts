@@ -56,7 +56,7 @@ class VehicleRoute{
             const {id} = req.params;
             const response = await this.controller.get_list()
             let code:number;
-            response.length === 0 ? code = 404 : code = 200;
+            response.length === 0 ? code = 204 : code = 200;
             return res.status(code).json(response);
         } catch (error) {
             return res.status(500);
@@ -99,16 +99,6 @@ class VehicleRoute{
             return res.status(200).json(response);
         } catch (error) {
             return res.status(500);
-        }
-    }
-
-    private async suggestions(req:Request, res:Response):Promise<Response> {
-        try{
-            const {id} = req.params;
-            const response = await {}
-            return res.status(200).json(response);
-        } catch (error) {
-            return res.status(403);
         }
     }
 

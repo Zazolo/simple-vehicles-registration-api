@@ -120,9 +120,6 @@ class VehicleDatabase implements IVehicleDatabase{
     remove(id: string): Promise<boolean> {
         return knex('vehicle').where('id', id).del();
     }
-    get_suggestion_list(brand?: string): Promise<string[]> {
-        throw new Error("Method not implemented.");
-    }
 
 }
 
